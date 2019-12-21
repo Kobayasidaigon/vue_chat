@@ -21,4 +21,4 @@ yarn-error.log*
 *.sw?
 
 #firebase
-./plugins/firebase.js
+firebase.js
