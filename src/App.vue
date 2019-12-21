@@ -1,32 +1,55 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    
+    <p>メッセージをいれてね</p>
+    <input type="text" v-model="message" />
+    <button @click="send">send</button>
+    <p>{{this.$store.state.message }}</p>
+    <li v-for="(value, key) in messageList" :key="key">{{value}}</li>
   </div>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import firebase from "./plugins/firebase";
 
-#nav {
-  padding: 30px;
-}
+var db = firebase.firestore();
+export default {
+  data() {
+    return {
+      message: "hello world",
+      messageList: []
+    };
+  },
+  methods: {
+    send: function() {
+      db.collection("message").add({
+        message: this.message
+      });
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+      db.collection("message")
+        .get()
+        .then(snapshot => {
+          let messageList = [];
+          snapshot.forEach(doc => {
+            messageList.push(doc.data().message);
+          });
+          this.messageList = messageList;
+        });
+    }
+  },
+  created: function() {
+    db.collection("message")
+      .get()
+      .then(snapshot => {
+        let messageList = [];
+        snapshot.forEach(doc => {
+          messageList.push(doc.data().message);
+        });
+        this.messageList = messageList;
+      })
+      .catch(err => {
+        console.log("Error getting documents", err);
+      });
+  }
+};
+</script>
