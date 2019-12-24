@@ -11,9 +11,7 @@
     <input type="text" v-model="message" />
     <button @click="send">send</button>
     <p>{{ this.$store.state.message }}</p>
-    <li v-for="(value,index, key) in messageList" :key="key">
-      {{value}}
-    </li>
+    <li v-for="(value,index, key) in messageList" :key="key">{{value}}</li>
   </div>
 </template>
 
@@ -58,13 +56,14 @@ export default {
     db.collection("message")
       .get()
       .then(snapshot => {
-        let messageList = [];
         snapshot.forEach(doc => {
-          messageList.push(doc.data().message);
-          messageList.push(doc.data().user_name);
-          messageList.push(doc.data().user_image);
+          let data = {
+            message: doc.data().message,
+            user_name: doc.data().user_name,
+            user_image: doc.data().user_image
+          };
+          this.messageList.push(data);
         });
-        this.messageList = messageList;
       })
       .catch(err => {
         console.log("Error getting documents", err);
