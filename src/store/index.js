@@ -20,6 +20,10 @@ export default new Vuex.Store({
     sign_in(state, user) {
       state.user_prof_name = user.user.displayName;
       state.user_prof_image = user.user.photoURL;
+    },
+    sign_out(state) {
+      state.user_prof_name = "ユーザーA";
+      state.user_prof_image = "";
     }
   },
   actions: {
@@ -31,6 +35,9 @@ export default new Vuex.Store({
     },
     sign_in(context, user) {
       context.commit("sign_in", user);
+    },
+    sign_out(context) {
+      context.commit("sign_out");
     }
   },
   modules: {}
